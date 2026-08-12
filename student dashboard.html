@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudentHub Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{--primary:#6c5ce7;--primary-light:#a29bfe;--secondary:#00cec9;--accent:#fd79a8;--success:#00b894;--warning:#fdcb6e;--danger:#ff7675;--bg:#0f0f23;--card-bg:rgba(255,255,255,0.05);--card-hover:rgba(255,255,255,0.1);--text:#ffffff;--text-secondary:#a0a0b0;--border:rgba(255,255,255,0.1);--glass:rgba(255,255,255,0.08);--glow:0 0 40px rgba(108,92,231,0.3)}
+        body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+
+        .particles{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;overflow:hidden}
+        .particle{position:absolute;width:4px;height:4px;background:var(--primary);border-radius:50%;animation:float 15s infinite;opacity:0.3}
+        @keyframes float{0%,100%{transform:translateY(100vh) rotate(0deg);opacity:0}10%{opacity:0.3}90%{opacity:0.3}100%{transform:translateY(-100vh) rotate(720deg);opacity:0}}
+
+        .orb{position:fixed;border-radius:50%;filter:blur(80px);opacity:0.4;z-index:0}
+        .orb-1{width:400px;height:400px;background:var(--primary);top:-100px;left:-100px;animation:moveOrb 20s ease-in-out infinite}
+        .orb-2{width:300px;height:300px;background:var(--accent);bottom:-100px;right:-100px;animation:moveOrb 15s ease-in-out infinite reverse}
+        .orb-3{width:250px;height:250px;background:var(--secondary);top:50%;left:50%;animation:moveOrb 25s ease-in-out infinite}
+        @keyframes moveOrb{0%,100%{transform:translate(0,0)}25%{transform:translate(50px,-50px)}50%{transform:translate(-50px,50px)}75%{transform:translate(50px,50px)}}
+
+        .header{position:relative;z-index:10;padding:20px 40px;display:flex;justify-content:space-between;align-items:center;backdrop-filter:blur(20px);background:rgba(0,0,0,0.3);border-bottom:1px solid var(--border)}
+        .logo{display:flex;align-items:center;gap:15px}
+        .logo-icon{width:50px;height:50px;background:linear-gradient(135deg,var(--primary),var(--accent));border-radius:15px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;animation:pulse 2s infinite}
+        @keyframes pulse{0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(108,92,231,0.7)}50%{transform:scale(1.05);box-shadow:0 0 20px 10px rgba(108,92,231,0)}}
+        .logo h1{font-size:1.5rem;font-weight:700;background:linear-gradient(135deg,var(--primary-light),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+        .header-right{display:flex;align-items:center;gap:20px}
+        .greeting{font-size:0.9rem;color:var(--text-secondary)}
+        .greeting span{color:var(--secondary);font-weight:600}
+        .theme-btn,.shortcuts-btn{background:var(--glass);border:1px solid var(--border);padding:12px 20px;border-radius:12px;color:var(--text);cursor:pointer;font-size:0.9rem;transition:all 0.3s;backdrop-filter:blur(10px);font-family:'Poppins',sans-serif}
+        .theme-btn:hover,.shortcuts-btn:hover{background:var(--primary);transform:translateY(-2px);box-shadow:var(--glow)}
+
+        .nav{position:relative;z-index:10;display:flex;justify-content:center;gap:10px;padding:20px;backdrop-filter:blur(20px)}
+        .nav-btn{padding:15px 30px;border:none;background:var(--glass);border-radius:15px;color:var(--text-secondary);cursor:pointer;font-size:0.95rem;font-family:'Poppins',sans-serif;transition:all 0.3s;border:1px solid var(--border);position:relative;overflow:hidden}
+        .nav-btn::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.2),transparent);transition:left 0.5s}
+        .nav-btn:hover::before{left:100%}
+        .nav-btn:hover{background:var(--card-hover);color:var(--text);transform:translateY(-3px)}
+        .nav-btn.active{background:linear-gradient(135deg,var(--primary),var(--accent));color:white;box-shadow:0 10px 30px rgba(108,92,231,0.4)}
+
+        .main{position:relative;z-index:10;padding:30px 40px;max-width:1400px;margin:0 auto}
+        .tab-content{display:none;animation:fadeIn 0.5s ease}
+        .tab-content.active{display:block}
+        @keyframes fadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+        .glass-card{background:var(--glass);backdrop-filter:blur(20px);border-radius:25px;padding:30px;border:1px solid var(--border);transition:all 0.3s;position:relative;overflow:hidden}
+        .glass-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--primary-light),transparent)}
+        .glass-card:hover{transform:translateY(-5px);box-shadow:var(--glow);border-color:var(--primary)}
+
+        .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:25px;margin-bottom:40px}
+        .stat-card{background:var(--glass);backdrop-filter:blur(20px);border-radius:25px;padding:30px;border:1px solid var(--border);position:relative;overflow:hidden;transition:all 0.3s}
+        .stat-card::after{content:'';position:absolute;top:-50%;right:-50%;width:100%;height:100%;background:radial-gradient(circle,var(--primary) 0%,transparent 70%);opacity:0;transition:opacity 0.3s}
+        .stat-card:hover::after{opacity:0.1}
+        .stat-card:hover{transform:translateY(-10px) scale(1.02)}
+        .stat-icon{width:70px;height:70px;border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:2rem;margin-bottom:20px;position:relative;z-index:1}
+        .stat-icon.blue{background:linear-gradient(135deg,rgba(108,92,231,0.3),rgba(108,92,231,0.1))}
+        .stat-icon.green{background:linear-gradient(135deg,rgba(0,184,148,0.3),rgba(0,184,148,0.1))}
+        .stat-icon.orange{background:linear-gradient(135deg,rgba(253,203,110,0.3),rgba(253,203,110,0.1))}
+        .stat-icon.pink{background:linear-gradient(135deg,rgba(253,121,168,0.3),rgba(253,121,168,0.1))}
+        .stat-info{position:relative;z-index:1}
+        .stat-number{font-size:3rem;font-weight:800;background:linear-gradient(135deg,var(--text),var(--primary-light));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+        .stat-label{color:var(--text-secondary);font-size:0.95rem;margin-top:5px}
+        .progress-bar{width:100%;height:8px;background:var(--border);border-radius:10px;margin-top:15px;overflow:hidden}
+        .progress-fill{height:100%;background:linear-gradient(90deg,var(--primary),var(--accent));border-radius:10px;transition:width 1s ease;position:relative}
+        .progress-fill::after{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.3),transparent);animation:shimmer 2s infinite}
+        @keyframes shimmer{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+
+        .charts-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(350px,1fr));gap:25px;margin-bottom:30px}
+        .chart-container{position:relative;height:250px;display:flex;align-items:flex-end;justify-content:space-around;padding:20px 10px 0}
+        .bar{width:40px;border-radius:10px 10px 0 0;transition:height 1s ease,background 0.3s;cursor:pointer;position:relative}
+        .bar:hover{transform:scaleY(1.05);transform-origin:bottom}
+        .bar-label{position:absolute;bottom:-30px;left:50%;transform:translateX(-50%);font-size:0.7rem;color:var(--text-secondary);white-space:nowrap}
+        .bar-value{position:absolute;top:-25px;left:50%;transform:translateX(-50%);font-size:0.8rem;font-weight:600}
+
+        .donut-container{display:flex;align-items:center;justify-content:center;gap:30px;flex-wrap:wrap}
+        .donut{width:180px;height:180px;border-radius:50%;position:relative;display:flex;align-items:center;justify-content:center}
+        .donut-center{position:absolute;width:100px;height:100px;background:var(--bg);border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center}
+        .donut-center .number{font-size:1.8rem;font-weight:700}
+        .donut-center .label{font-size:0.7rem;color:var(--text-secondary)}
+        .legend{display:flex;flex-direction:column;gap:12px}
+        .legend-item{display:flex;align-items:center;gap:10px;font-size:0.9rem}
+        .legend-color{width:12px;height:12px;border-radius:3px}
+
+        .timeline{position:relative;padding-left:40px}
+        .timeline::before{content:'';position:absolute;left:15px;top:0;bottom:0;width:2px;background:linear-gradient(180deg,var(--primary),var(--accent),var(--secondary))}
+        .timeline-item{position:relative;margin-bottom:30px;animation:slideIn 0.5s ease forwards;opacity:0}
+        @keyframes slideIn{from{opacity:0;transform:translateX(-20px)}to{opacity:1;transform:translateX(0)}}
+        .timeline-dot{position:absolute;left:-33px;width:14px;height:14px;border-radius:50%;border:3px solid var(--primary);background:var(--bg)}
+        .timeline-content{background:var(--glass);padding:20px;border-radius:15px;border:1px solid var(--border)}
+        .timeline-time{font-size:0.75rem;color:var(--text-secondary);margin-bottom:5px}
+        .timeline-text{font-size:0.95rem}
+
+        .form-container{display:grid;grid-template-columns:1fr 1fr;gap:40px}
+        .input-group{position:relative;margin-bottom:25px}
+        .input-group label{display:block;margin-bottom:10px;font-weight:500;color:var(--text-secondary);font-size:0.9rem}
+        .input-group input,.input-group select{width:100%;padding:16px 20px;border:2px solid var(--border);border-radius:15px;font-size:1rem;font-family:'Poppins',sans-serif;background:var(--glass);color:var(--text);transition:all 0.3s}
+        .input-group input:focus,.input-group select:focus{outline:none;border-color:var(--primary);box-shadow:0 0 20px rgba(108,92,231,0.3)}
+        .input-group input::placeholder{color:var(--text-secondary)}
+        .error-msg{color:var(--danger);font-size:0.8rem;margin-top:8px;display:none}
+
+        .btn{padding:16px 35px;border:none;border-radius:15px;cursor:pointer;font-size:1rem;font-weight:600;font-family:'Poppins',sans-serif;transition:all 0.3s;position:relative;overflow:hidden}
+        .btn::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.2),transparent);transition:left 0.5s}
+        .btn:hover::before{left:100%}
+        .btn:hover{transform:translateY(-3px);box-shadow:0 10px 30px rgba(0,0,0,0.3)}
+        .btn:active{transform:translateY(0)}
+        .btn-primary{background:linear-gradient(135deg,var(--primary),var(--accent));color:white}
+        .btn-success{background:linear-gradient(135deg,var(--success),var(--secondary));color:white}
+        .btn-danger{background:linear-gradient(135deg,var(--danger),var(--accent));color:white}
+
+        .table-wrapper{overflow-x:auto;border-radius:15px}
+        table{width:100%;border-collapse:collapse}
+        table th,table td{padding:18px;text-align:left;border-bottom:1px solid var(--border)}
+        table th{background:linear-gradient(135deg,var(--primary),var(--accent));color:white;font-weight:600;font-size:0.9rem}
+        table tr{transition:all 0.3s}
+        table tr:hover{background:var(--card-hover);transform:scale(1.01)}
+        .badge{padding:8px 16px;border-radius:20px;font-size:0.8rem;font-weight:600;display:inline-block}
+        .badge-success{background:rgba(0,184,148,0.2);color:var(--success)}
+        .action-btns{display:flex;gap:8px}
+        .action-btn{width:40px;height:40px;border:none;border-radius:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.3s;font-size:1rem}
+        .action-btn:hover{transform:scale(1.1)}
+        .action-btn.edit{background:rgba(253,203,110,0.2)}
+        .action-btn.delete{background:rgba(255,118,117,0.2)}
+
+        .search-container{display:flex;gap:15px;margin-bottom:25px;flex-wrap:wrap}
+        .search-box{flex:1;min-width:250px;position:relative}
+        .search-box input{width:100%;padding:16px 20px 16px 50px;border:2px solid var(--border);border-radius:15px;font-size:1rem;font-family:'Poppins',sans-serif;background:var(--glass);color:var(--text);transition:all 0.3s}
+        .search-box input:focus{outline:none;border-color:var(--primary);box-shadow:0 0 20px rgba(108,92,231,0.3)}
+        .search-box::before{content:'🔍';position:absolute;left:18px;top:50%;transform:translateY(-50%)}
+        .search-box select,.filter-select{padding:16px 20px;border:2px solid var(--border);border-radius:15px;background:var(--glass);color:var(--text);font-family:'Poppins',sans-serif;font-size:1rem}
+
+        .todo-input-container{display:flex;gap:15px;margin-bottom:30px}
+        .todo-input-container input{flex:1;padding:18px 25px;border:2px solid var(--border);border-radius:15px;font-size:1rem;font-family:'Poppins',sans-serif;background:var(--glass);color:var(--text);transition:all 0.3s}
+        .todo-input-container input:focus{outline:none;border-color:var(--primary);box-shadow:0 0 20px rgba(108,92,231,0.3)}
+        .todo-list{list-style:none}
+        .todo-item{display:flex;align-items:center;gap:20px;padding:20px 25px;background:var(--glass);border-radius:15px;margin-bottom:15px;border:1px solid var(--border);transition:all 0.3s;cursor:grab}
+        .todo-item:active{cursor:grabbing}
+        .todo-item:hover{transform:translateX(10px);border-color:var(--primary)}
+        .todo-item.dragging{opacity:0.5;transform:scale(1.02)}
+        .todo-item.completed .todo-text{text-decoration:line-through;color:var(--text-secondary)}
+        .todo-checkbox{width:24px;height:24px;border-radius:8px;cursor:pointer;accent-color:var(--primary)}
+        .todo-text{flex:1;font-size:1rem}
+        .todo-delete{width:40px;height:40px;border:none;border-radius:10px;background:rgba(255,118,117,0.2);color:var(--danger);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.3s}
+        .todo-delete:hover{background:var(--danger);color:white;transform:rotate(90deg)}
+
+        .calculator{background:var(--glass);backdrop-filter:blur(20px);border-radius:30px;padding:30px;border:1px solid var(--border);width:340px}
+        .calc-display{background:var(--bg);border-radius:20px;padding:25px;text-align:right;margin-bottom:20px;min-height:100px;display:flex;flex-direction:column;justify-content:flex-end}
+        .calc-display .prev{font-size:1rem;color:var(--text-secondary);min-height:25px}
+        .calc-display .current{font-size:2.5rem;font-weight:700;word-wrap:break-word}
+        .calc-buttons{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+        .calc-btn{padding:22px;font-size:1.3rem;border:none;border-radius:15px;cursor:pointer;font-family:'Poppins',sans-serif;font-weight:600;transition:all 0.2s}
+        .calc-btn:hover{transform:scale(1.05)}
+        .calc-btn:active{transform:scale(0.95)}
+        .calc-btn.num{background:var(--glass);color:var(--text)}
+        .calc-btn.op{background:linear-gradient(135deg,var(--primary),var(--accent));color:white}
+        .calc-btn.eq{background:linear-gradient(135deg,var(--success),var(--secondary));color:white;grid-column:span 2}
+        .calc-btn.clr{background:linear-gradient(135deg,var(--danger),var(--accent));color:white}
+
+        .toast-container{position:fixed;top:20px;right:20px;z-index:10000;display:flex;flex-direction:column;gap:10px}
+        .toast{padding:18px 25px;border-radius:15px;color:white;font-weight:500;display:flex;align-items:center;gap:12px;animation:slideInRight 0.5s ease;backdrop-filter:blur(20px)}
+        @keyframes slideInRight{from{opacity:0;transform:translateX(100px)}to{opacity:1;transform:translateX(0)}}
+        .toast.success{background:linear-gradient(135deg,var(--success),var(--secondary))}
+        .toast.error{background:linear-gradient(135deg,var(--danger),var(--accent))}
+        .toast.info{background:linear-gradient(135deg,var(--primary),var(--accent))}
+
+        .confetti{position:fixed;width:10px;height:10px;z-index:9999;animation:confettiFall 3s ease forwards}
+        @keyframes confettiFall{0%{opacity:1;transform:translateY(0) rotate(0deg)}100%{opacity:0;transform:translateY(100vh) rotate(720deg)}}
+
+        .modal-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);z-index:1000;align-items:center;justify-content:center;backdrop-filter:blur(5px)}
+        .modal-overlay.active{display:flex}
+        .modal{background:var(--card-bg);backdrop-filter:blur(20px);border-radius:25px;padding:40px;width:90%;max-width:500px;border:1px solid var(--border);animation:modalPop 0.3s ease}
+        @keyframes modalPop{from{opacity:0;transform:scale(0.8)}to{opacity:1;transform:scale(1)}}
+        .modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:25px}
+        .modal-header h3{font-size:1.4rem}
+        .modal-close{width:40px;height:40px;border:none;border-radius:10px;background:var(--glass);color:var(--text);cursor:pointer;font-size:1.2rem;transition:all 0.3s}
+        .modal-close:hover{background:var(--danger);transform:rotate(90deg)}
+
+        .shortcuts-panel{position:fixed;bottom:20px;left:20px;background:var(--glass);backdrop-filter:blur(20px);border-radius:15px;padding:20px;border:1px solid var(--border);z-index:100;display:none}
+        .shortcuts-panel.active{display:block;animation:fadeIn 0.3s ease}
+        .shortcut-item{display:flex;justify-content:space-between;gap:30px;padding:8px 0;font-size:0.85rem}
+        .shortcut-key{background:var(--bg);padding:4px 10px;border-radius:5px;font-family:monospace}
+
+        .empty-state{text-align:center;padding:40px;color:var(--text-secondary)}
+        .empty-state .icon{font-size:3rem;margin-bottom:15px}
+
+        @media(max-width:768px){.header{padding:15px 20px}.logo h1{font-size:1.2rem}.greeting{display:none}.main{padding:20px}.nav{flex-wrap:wrap;justify-content:center}.nav-btn{padding:12px 20px;font-size:0.85rem}.stats-grid{grid-template-columns:1fr 1fr}.charts-grid{grid-template-columns:1fr}.form-container{grid-template-columns:1fr}}
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+    <div class="toast-container" id="toastContainer"></div>
+
+    <header class="header">
+        <div class="logo">
+            <div class="logo-icon">🎓</div>
+            <h1>StudentHub Pro</h1>
+        </div>
+        <div class="header-right">
+            <div class="greeting" id="greeting"></div>
+            <button class="shortcuts-btn" onclick="toggleShortcuts()">⌨️ Shortcuts</button>
+            <button class="theme-btn" onclick="toggleTheme()">✨ Cosmic</button>
+        </div>
+    </header>
+
+    <nav class="nav">
+        <button class="nav-btn active" data-tab="dashboard">📊 Dashboard</button>
+        <button class="nav-btn" data-tab="students">👥 Students</button>
+        <button class="nav-btn" data-tab="todo">📝 Tasks</button>
+        <button class="nav-btn" data-tab="calculator">🧮 Calculator</button>
+    </nav>
+
+    <main class="main">
+        <div id="dashboard" class="tab-content active">
+            <div class="stats-grid">
+                <div class="stat-card"><div class="stat-icon blue">👥</div><div class="stat-info"><div class="stat-number" id="totalStudents">0</div><div class="stat-label">Total Students</div></div><div class="progress-bar"><div class="progress-fill" id="studentProgress" style="width:0%"></div></div></div>
+                <div class="stat-card"><div class="stat-icon green">✅</div><div class="stat-info"><div class="stat-number" id="completedTasks">0</div><div class="stat-label">Tasks Done</div></div><div class="progress-bar"><div class="progress-fill" id="taskProgress" style="width:0%"></div></div></div>
+                <div class="stat-card"><div class="stat-icon orange">⏳</div><div class="stat-info"><div class="stat-number" id="pendingTasks">0</div><div class="stat-label">Pending Tasks</div></div><div class="progress-bar"><div class="progress-fill" id="pendingProgress" style="width:0%"></div></div></div>
+                <div class="stat-card"><div class="stat-icon pink">🎯</div><div class="stat-info"><div class="stat-number" id="totalCourses">0</div><div class="stat-label">Courses</div></div><div class="progress-bar"><div class="progress-fill" id="courseProgress" style="width:0%"></div></div></div>
+            </div>
+            <div class="charts-grid">
+                <div class="glass-card"><h2 style="margin-bottom:20px">📈 Students by Course</h2><div class="chart-container" id="barChart"></div></div>
+                <div class="glass-card"><h2 style="margin-bottom:20px">🎯 Task Completion</h2><div class="donut-container" id="donutChart"><div class="donut" id="donut"></div><div class="legend" id="legend"></div></div></div>
+            </div>
+            <div class="glass-card"><h2 style="margin-bottom:20px">🕐 Recent Activity</h2><div class="timeline" id="activityTimeline"><div class="empty-state"><p>No recent activity</p></div></div></div>
+        </div>
+
+        <div id="students" class="tab-content">
+            <div class="glass-card" style="margin-bottom:30px">
+                <h2 style="margin-bottom:25px">➕ Register New Student</h2>
+                <form id="regForm" onsubmit="addStudent(event)">
+                    <div class="form-container">
+                        <div>
+                            <div class="input-group"><label>Full Name</label><input type="text" id="sName" placeholder="Enter full name" required><div class="error-msg" id="nameErr">Name must be at least 2 characters</div></div>
+                            <div class="input-group"><label>Email Address</label><input type="email" id="sEmail" placeholder="Enter email" required><div class="error-msg" id="emailErr">Enter a valid email</div></div>
+                        </div>
+                        <div>
+                            <div class="input-group"><label>Phone Number</label><input type="tel" id="sPhone" placeholder="Enter phone number" required><div class="error-msg" id="phoneErr">Enter a valid phone (10+ digits)</div></div>
+                            <div class="input-group"><label>Course</label><select id="sCourse" required><option value="">Select Course</option><option value="Computer Science">Computer Science</option><option value="Engineering">Engineering</option><option value="Business">Business Admin</option><option value="Arts">Liberal Arts</option><option value="Medicine">Medicine</option><option value="Law">Law</option><option value="Other">Other</option></select></div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">🚀 Register Student</button>
+                </form>
+            </div>
+            <div class="glass-card">
+                <h2 style="margin-bottom:20px">📋 Student Directory</h2>
+                <div class="search-container">
+                    <div class="search-box"><input type="text" id="searchInput" placeholder="Search by name or email..." oninput="renderStudents()"></div>
+                    <select id="filterCourse" onchange="renderStudents()" class="filter-select"><option value="">All Courses</option><option value="Computer Science">Computer Science</option><option value="Engineering">Engineering</option><option value="Business">Business</option><option value="Arts">Arts</option><option value="Medicine">Medicine</option><option value="Law">Law</option></select>
+                    <button class="btn btn-success" onclick="exportCSV()">📥 Export</button>
+                </div>
+                <div class="table-wrapper"><table><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Course</th><th>Date</th><th>Actions</th></tr></thead><tbody id="studentTable"><tr><td colspan="6" class="empty-state">No students yet</td></tr></tbody></table></div>
+            </div>
+        </div>
+
+        <div id="todo" class="tab-content">
+            <div class="glass-card">
+                <h2 style="margin-bottom:25px">📝 Task Manager</h2>
+                <div class="todo-input-container"><input type="text" id="todoInput" placeholder="What needs to be done?" onkeypress="if(event.key==='Enter')addTodo()"><button class="btn btn-primary" onclick="addTodo()">➕ Add</button></div>
+                <ul class="todo-list" id="todoList"></ul>
+            </div>
+        </div>
+
+        <div id="calculator" class="tab-content">
+            <div class="glass-card" style="display:flex;justify-content:center">
+                <div class="calculator">
+                    <div class="calc-display"><div class="prev" id="calcPrev"></div><div class="current" id="calcCurrent">0</div></div>
+                    <div class="calc-buttons">
+                        <button class="calc-btn clr" onclick="cClear()">AC</button><button class="calc-btn clr" onclick="cBack()">⌫</button><button class="calc-btn op" onclick="cOp('%')">%</button><button class="calc-btn op" onclick="cOp('/')">÷</button>
+                        <button class="calc-btn num" onclick="cNum('7')">7</button><button class="calc-btn num" onclick="cNum('8')">8</button><button class="calc-btn num" onclick="cNum('9')">9</button><button class="calc-btn op" onclick="cOp('*')">×</button>
+                        <button class="calc-btn num" onclick="cNum('4')">4</button><button class="calc-btn num" onclick="cNum('5')">5</button><button class="calc-btn num" onclick="cNum('6')">6</button><button class="calc-btn op" onclick="cOp('-')">−</button>
+                        <button class="calc-btn num" onclick="cNum('1')">1</button><button class="calc-btn num" onclick="cNum('2')">2</button><button class="calc-btn num" onclick="cNum('3')">3</button><button class="calc-btn op" onclick="cOp('+')">+</button>
+                        <button class="calc-btn num" onclick="cNum('0')" style="grid-column:span 2">0</button><button class="calc-btn num" onclick="cNum('.')">.</button><button class="calc-btn eq" onclick="cEq()">=</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div class="modal-overlay" id="editModal">
+        <div class="modal">
+            <div class="modal-header"><h3>✏️ Edit Student</h3><button class="modal-close" onclick="closeModal()">&times;</button></div>
+            <form onsubmit="updateStudent(event)">
+                <input type="hidden" id="editIdx">
+                <div class="input-group"><label>Full Name</label><input type="text" id="eName" required></div>
+                <div class="input-group"><label>Email</label><input type="email" id="eEmail" required></div>
+                <div class="input-group"><label>Phone</label><input type="tel" id="ePhone" required></div>
+                <div class="input-group"><label>Course</label><select id="eCourse" required><option value="Computer Science">Computer Science</option><option value="Engineering">Engineering</option><option value="Business">Business</option><option value="Arts">Arts</option><option value="Medicine">Medicine</option><option value="Law">Law</option><option value="Other">Other</option></select></div>
+                <button type="submit" class="btn btn-primary" style="width:100%">💾 Update Student</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="shortcuts-panel" id="shortcutsPanel">
+        <h4 style="margin-bottom:15px">⌨️ Keyboard Shortcuts</h4>
+        <div class="shortcut-item"><span>Dashboard</span><span class="shortcut-key">Alt+1</span></div>
+        <div class="shortcut-item"><span>Students</span><span class="shortcut-key">Alt+2</span></div>
+        <div class="shortcut-item"><span>Tasks</span><span class="shortcut-key">Alt+3</span></div>
+        <div class="shortcut-item"><span>Calculator</span><span class="shortcut-key">Alt+4</span></div>
+        <div class="shortcut-item"><span>Theme</span><span class="shortcut-key">Alt+T</span></div>
+    </div>
+
+    <script>
+        const particlesEl=document.getElementById('particles');
+        for(let i=0;i<50;i++){const p=document.createElement('div');p.className='particle';p.style.left=Math.random()*100+'%';p.style.animationDelay=Math.random()*15+'s';p.style.animationDuration=(10+Math.random()*20)+'s';particlesEl.appendChild(p)}
+
+        function updateGreeting(){const h=new Date().getHours();const g=h<12?'🌅 Good Morning':h<18?'☀️ Good Afternoon':'🌙 Good Evening';document.getElementById('greeting').innerHTML=g+', <span>Admin</span>'}
+        updateGreeting();
+
+        let students=JSON.parse(localStorage.getItem('students'))||[];
+        let todos=JSON.parse(localStorage.getItem('todos'))||[];
+        let activities=JSON.parse(localStorage.getItem('activities'))||[];
+
+        function showToast(msg,type='success'){const icons={success:'✅',error:'❌',info:'ℹ️'};const toast=document.createElement('div');toast.className='toast '+type;toast.innerHTML=icons[type]+' '+msg;document.getElementById('toastContainer').appendChild(toast);setTimeout(()=>toast.remove(),3000)}
+
+        function launchConfetti(){const colors=['#6c5ce7','#00cec9','#fd79a8','#fdcb6e','#00b894'];for(let i=0;i<50;i++){const c=document.createElement('div');c.className='confetti';c.style.left=Math.random()*100+'vw';c.style.background=colors[Math.floor(Math.random()*colors.length)];c.style.borderRadius=Math.random()>0.5?'50%':'0';c.style.animationDelay=Math.random()*2+'s';document.body.appendChild(c);setTimeout(()=>c.remove(),3000)}}
+
+        function logActivity(type,msg){activities.unshift({type,msg,time:new Date().toLocaleString()});if(activities.length>20)activities.pop();localStorage.setItem('activities',JSON.stringify(activities))}
+
+        document.querySelectorAll('.nav-btn').forEach(btn=>{btn.addEventListener('click',()=>{document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));btn.classList.add('active');document.getElementById(btn.dataset.tab).classList.add('active')})});
+
+        function toggleTheme(){document.body.classList.toggle('cosmic');showToast('Theme toggled!','info')}
+        function toggleShortcuts(){document.getElementById('shortcutsPanel').classList.toggle('active')}
+
+        document.addEventListener('keydown',e=>{if(e.altKey&&e.key==='1')document.querySelector('[data-tab="dashboard"]').click();if(e.altKey&&e.key==='2')document.querySelector('[data-tab="students"]').click();if(e.altKey&&e.key==='3')document.querySelector('[data-tab="todo"]').click();if(e.altKey&&e.key==='4')document.querySelector('[data-tab="calculator"]').click();if(e.altKey&&e.key==='t')toggleTheme()});
+
+        function addStudent(e){e.preventDefault();let v=true;const name=document.getElementById('sName').value;const email=document.getElementById('sEmail').value;const phone=document.getElementById('sPhone').value;const course=document.getElementById('sCourse').value;
+        if(name.trim().length<2){document.getElementById('nameErr').style.display='block';v=false}else document.getElementById('nameErr').style.display='none';
+        if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){document.getElementById('emailErr').style.display='block';v=false}else document.getElementById('emailErr').style.display='none';
+        if(phone.replace(/\D/g,'').length<10){document.getElementById('phoneErr').style.display='block';v=false}else document.getElementById('phoneErr').style.display='none';
+        if(!v)return;
+        students.push({name,email,phone,course,date:new Date().toLocaleDateString()});localStorage.setItem('students',JSON.stringify(students));logActivity('add','Registered '+name);document.getElementById('regForm').reset();launchConfetti();showToast('Student registered successfully!');renderAll()}
+
+        function renderStudents(){const search=document.getElementById('searchInput')?.value.toLowerCase()||'';const filter=document.getElementById('filterCourse')?.value||'';const tbody=document.getElementById('studentTable');
+        const filtered=students.filter(s=>{const ms=s.name.toLowerCase().includes(search)||s.email.toLowerCase().includes(search);const mf=!filter||s.course===filter;return ms&&mf});
+        if(!filtered.length){tbody.innerHTML='<tr><td colspan="6" class="empty-state">No students found</td></tr>';return}
+        tbody.innerHTML=filtered.map((s,i)=>`<tr><td><strong>${s.name}</strong></td><td>${s.email}</td><td>${s.phone}</td><td><span class="badge badge-success">${s.course}</span></td><td>${s.date}</td><td class="action-btns"><button class="action-btn edit" onclick="editStudent(${i})">✏️</button><button class="action-btn delete" onclick="deleteStudent(${i})">🗑️</button></td></tr>`).join('')}
+
+        function editStudent(i){document.getElementById('editIdx').value=i;document.getElementById('eName').value=students[i].name;document.getElementById('eEmail').value=students[i].email;document.getElementById('ePhone').value=students[i].phone;document.getElementById('eCourse').value=students[i].course;document.getElementById('editModal').classList.add('active')}
+        function closeModal(){document.getElementById('editModal').classList.remove('active')}
+        function updateStudent(e){e.preventDefault();const i=document.getElementById('editIdx').value;students[i]={name:document.getElementById('eName').value,email:document.getElementById('eEmail').value,phone:document.getElementById('ePhone').value,course:document.getElementById('eCourse').value,date:students[i].date};localStorage.setItem('students',JSON.stringify(students));logActivity('edit','Updated '+students[i].name);closeModal();showToast('Student updated!');renderAll()}
+        function deleteStudent(i){if(!confirm('Delete '+students[i].name+'?'))return;logActivity('delete','Deleted '+students[i].name);students.splice(i,1);localStorage.setItem('students',JSON.stringify(students));showToast('Student deleted!','error');renderAll()}
+        function exportCSV(){if(!students.length){showToast('No students to export!','error');return}let csv='Name,Email,Phone,Course,Date\n';students.forEach(s=>{csv+=`${s.name},${s.email},${s.phone},${s.course},${s.date}\n`});const blob=new Blob([csv],{type:'text/csv'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='students.csv';a.click();showToast('CSV exported!')}
+
+        function addTodo(){const input=document.getElementById('todoInput');const text=input.value.trim();if(!text){showToast('Enter a task!','error');return}todos.push({text,completed:false});localStorage.setItem('todos',JSON.stringify(todos));input.value='';showToast('Task added!');renderAll()}
+        function toggleTodo(i){todos[i].completed=!todos[i].completed;localStorage.setItem('todos',JSON.stringify(todos));if(todos[i].completed)launchConfetti();renderAll()}
+        function deleteTodo(i){todos.splice(i,1);localStorage.setItem('todos',JSON.stringify(todos));showToast('Task deleted!','error');renderAll()}
+        function renderTodos(){const list=document.getElementById('todoList');if(!todos.length){list.innerHTML='<li class="empty-state"><div class="icon">📝</div><p>No tasks yet</p></li>';return}
+        list.innerHTML=todos.map((t,i)=>`<li class="todo-item ${t.completed?'completed':''}" draggable="true" ondragstart="dragStart(event,${i})" ondragover="dragOver(event)" ondrop="drop(event,${i})"><input type="checkbox" class="todo-checkbox" ${t.completed?'checked':''} onchange="toggleTodo(${i})"><span class="todo-text">${t.text}</span><button class="todo-delete" onclick="deleteTodo(${i})">🗑️</button></li>`).join('')}
+
+        let dragIdx=null;
+        function dragStart(e,i){dragIdx=i;e.target.classList.add('dragging')}
+        function dragOver(e){e.preventDefault()}
+        function drop(e,i){e.preventDefault();if(dragIdx===null||dragIdx===i)return;const item=todos.splice(dragIdx,1)[0];todos.splice(i,0,item);localStorage.setItem('todos',JSON.stringify(todos));renderTodos();dragIdx=null}
+
+        let cv='0',cp='',co=null,cr=false;
+        function ucd(){document.getElementById('calcCurrent').textContent=cv;document.getElementById('calcPrev').textContent=cp}
+        function cNum(n){if(cr){cv='';cr=false}if(cv==='0'&&n!=='.')cv=n;else if(n==='.'&&cv.includes('.'))return;else cv+=n;ucd()}
+        function cOp(o){if(co&&!cr)cEq();co=o;cp=cv+' '+{'+':'+','-':'−','*':'×','/':'÷','%':'%'}[o];cv='';cr=false;ucd()}
+        function cEq(){if(!co)return;const p=parseFloat(cp),c=cv?parseFloat(cv):0;let r;switch(co){case'+':r=p+c;break;case'-':r=p-c;break;case'*':r=p*c;break;case'/':r=c!==0?p/c:'Error';break;case'%':r=p%c;break}cp=cp+' '+cv+' =';cv=r.toString();co=null;cr=true;ucd()}
+        function cClear(){cv='0';cp='';co=null;cr=false;ucd()}
+        function cBack(){cv=cv.length>1?cv.slice(0,-1):'0';ucd()}
+        document.addEventListener('keydown',e=>{if(!document.getElementById('calculator').classList.contains('active'))return;if(e.key>='0'&&e.key<='9')cNum(e.key);else if(e.key==='.')cNum('.');else if(e.key==='+')cOp('+');else if(e.key==='-')cOp('-');else if(e.key==='*')cOp('*');else if(e.key==='/'){e.preventDefault();cOp('/')}else if(e.key==='%')cOp('%');else if(e.key==='Enter'||e.key==='=')cEq();else if(e.key==='Backspace')cBack();else if(e.key==='Escape')cClear()});
+
+        function renderDashboard(){
+            animateNumber('totalStudents',students.length);
+            const done=todos.filter(t=>t.completed).length;
+            animateNumber('completedTasks',done);
+            animateNumber('pendingTasks',todos.filter(t=>!t.completed).length);
+            const courses=[...new Set(students.map(s=>s.course))];
+            animateNumber('totalCourses',courses.length);
+
+            document.getElementById('studentProgress').style.width=Math.min(students.length*10,100)+'%';
+            document.getElementById('taskProgress').style.width=todos.length?Math.round(done/todos.length*100)+'%':'0%';
+            document.getElementById('pendingProgress').style.width=todos.length?Math.round((todos.length-done)/todos.length*100)+'%':'0%';
+            document.getElementById('courseProgress').style.width=Math.min(courses.length*15,100)+'%';
+
+            const bc=document.getElementById('barChart');const cc={};students.forEach(s=>{cc[s.course]=(cc[s.course]||0)+1});
+            const colors=['#6c5ce7','#00cec9','#fd79a8','#fdcb6e','#00b894','#ff7675','#a29bfe'];
+            if(!Object.keys(cc).length){bc.innerHTML='<div class="empty-state"><p>No data yet</p></div>'}else{
+            bc.innerHTML=Object.entries(cc).map(([c,n],i)=>`<div class="bar" style="height:${Math.max(n*30,20)}px;background:${colors[i%colors.length]}"><div class="bar-value">${n}</div><div class="bar-label">${c.substring(0,8)}</div></div>`).join('')}
+
+            const donut=document.getElementById('donut');const legend=document.getElementById('legend');
+            if(!todos.length){donut.style.background='conic-gradient(var(--border) 0deg,var(--border) 360deg)';legend.innerHTML='<p style="color:var(--text-secondary)">No tasks yet</p>'}
+            else{const pct=Math.round(done/todos.length*360);donut.style.background=`conic-gradient(var(--success) 0deg ${pct}deg, var(--danger) ${pct}deg 360deg)`;donut.innerHTML=`<div class="donut-center"><div class="number">${Math.round(done/todos.length*100)}%</div><div class="label">Complete</div></div>`;
+            legend.innerHTML=`<div class="legend-item"><div class="legend-color" style="background:var(--success)"></div>Done: ${done}</div><div class="legend-item"><div class="legend-color" style="background:var(--danger)"></div>Pending: ${todos.length-done}</div>`}
+
+            const tl=document.getElementById('activityTimeline');
+            if(!activities.length){tl.innerHTML='<div class="empty-state"><p>No recent activity</p></div>'}else{
+            tl.innerHTML=activities.slice(0,5).map((a,i)=>`<div class="timeline-item" style="animation-delay:${i*0.1}s"><div class="timeline-dot"></div><div class="timeline-content"><div class="timeline-time">${a.time}</div><div class="timeline-text">${a.type==='add'?'➕':a.type==='edit'?'✏️':'🗑️'} ${a.msg}</div></div></div>`).join('')}
+        }
+
+        function animateNumber(id,target){const el=document.getElementById(id);const start=parseInt(el.textContent)||0;const diff=target-start;const dur=500;const st=Date.now();function step(){const p=Math.min((Date.now()-st)/dur,1);el.textContent=Math.round(start+diff*p);if(p<1)requestAnimationFrame(step)}step()}
+
+        function renderAll(){renderStudents();renderTodos();renderDashboard()}
+        renderAll();
+    </script>
+</body>
+</html>
+
